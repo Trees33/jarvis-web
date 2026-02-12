@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Jarvis PRO</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="chat-wrapper">
+    <div id="chat" class="chat"></div>
+
+    <div class="input-area">
+        <input id="messageInput" placeholder="Напиши сообщение..." />
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+</div>
+
+<script>
+async function sendMessage() {
+    const input = document.getElementById("messageInput");
+    const chat = document.getElementById("chat");
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage("user", text);
+    input.value = "";
+
+    const botMessage = addMessage("bot", "…");
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+    });
+
+    const data = await response.json();
+    botMessage.innerHTML = data.response;
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addMessage(type, text) {
+    const chat = document.getElementById("chat");
+
+    const message = document.createElement("div");
+    message.classList.add("message", type);
+
+    message.innerHTML = text;
+
+    chat.appendChild(message);
+    chat.scrollTop = chat.scrollHeight;
+
+    return message;
+}
+
+// Enter для отправки
+document.getElementById("messageInput")
+    .addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+});
+</script>
+
+</body>
+</html>
