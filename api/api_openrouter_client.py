@@ -7,6 +7,7 @@ from config import MODEL, MAX_TOKENS, TEMPERATURE
 load_dotenv()
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 
+print("API KEY FROM ENV:", API_KEY)
 
 # Обычный режим (для corebrain / CLI)
 def chat(messages):
